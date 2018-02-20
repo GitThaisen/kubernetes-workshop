@@ -1,0 +1,62 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Prepare') {
+      steps {
+        echo 'Preparing the build environment'
+        setVariables()
+      }
+    }
+
+    stage('Build') {
+      steps {
+        dockerBuild()
+      }
+      post {
+        failure {
+          slackBuildFailure('#node-deploy')
+        }
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh "docker run --rm ${env.DOCKER_IMAGE} npm run test"
+      }
+      post {
+        failure {
+          slackBuildFailure('#node-deploy')
+        }
+      }
+    }
+
+    stage('Deploy INT') {
+      when {
+        branch 'master'
+      }
+      steps {
+        script {
+          withCredentials([file(credentialsId: 'kubernetes', variable: 'KUBECONFIG_FILE')]) {
+            kubernetesDeploy configs: '.kubernetes/deployment.yaml', kubeConfig: [path: env.KUBECONFIG_FILE]
+            kubernetesDeploy configs: '.kubernetes/service.yaml', kubeConfig: [path: env.KUBECONFIG_FILE]
+            kubernetesDeploy configs: '.kubernetes/ingress.yaml', kubeConfig: [path: env.KUBECONFIG_FILE]
+          }
+        }
+      }
+      post {
+        failure {
+          slackDeployFailure('#node-deploy')
+        }
+        success {
+          slackDeploySuccess('#node-deploy', 'Kubernetes INT')
+        }
+      }
+    }
+  }
+  post {
+    always {
+      deleteDir()
+    }
+  }
+}

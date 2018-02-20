@@ -1,0 +1,21 @@
+{
+  "name": "kubernetes-workshop",
+  "version": "0.0.1",
+  "description": "The best Node.js app ever",
+  "author": "Markus Voss <markus.voss@nrk.no>",
+  "license": "ISC",
+  "main": "src/index.js",
+  "scripts": {
+    "precommit": "npm run test",
+    "start": "node src/index.js",
+    "test": "echo write tests",
+    "build" : "echo build stub"
+  },
+  "dependencies": {
+    "express": "^4.15.4"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 8.6.0"
+  }
+}
