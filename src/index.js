@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Hello World radiotv!'))
 
 // The liveness probe defined in `.kubernetes/deployment.yaml` expects that
 // your application provides a `GET /health` endpoint which returns `200 OK`.
