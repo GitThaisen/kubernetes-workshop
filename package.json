@@ -9,7 +9,7 @@
     "precommit": "npm run test",
     "start": "node src/index.js",
     "test": "echo write tests",
-    "build" : "echo build stub"
+    "build": "echo build stub"
   },
   "dependencies": {
     "express": "^4.15.4"
